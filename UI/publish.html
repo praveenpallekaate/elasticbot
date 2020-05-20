@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">
+
+    <title>Publish | Bot Creator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <!--#1 CSS Files-->
+    <link rel="stylesheet" href="assets/css/botui.min.css" />
+    <link rel="stylesheet" href="assets/css/botui-theme-default.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons"/>
+    <link rel="stylesheet" href="assets/css/vue-material.min.css"/>
+    <link rel="stylesheet" href="assets/css/default.css"/>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="index.css"/>
+    <link rel="stylesheet" href="assets/css/publish.css"/>
+  </head>
+  <body>
+    <div id="load">
+      <center><img src="assets/images/spinner.gif" /></center>      
+    </div>
+    <div id="main-container" class="display-none">
+      <div id="header">
+        <div class="container">        
+          <div class="row">
+            <div class="col">
+              <div id="title-div" class="pt-10">
+                <a href="index.html" id="navigate-back"><h4>Back To Creator</h4></a>
+              </div>
+            </div>
+            <div class="col">
+              <div class="float-right" id="logo-div">
+                <img 
+                  src="assets/images/logo-white.svg" 
+                  alt="SNC" 
+                  height="40px"
+                  width="80px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+            <div id="app" class="pt-80 pb-10">
+              <!--BotUI Tag-->
+              <div class="botui-app-container" id="botengine">
+                <bot-ui></bot-ui>
+              </div>
+              <div class="botui-app-container" id="query-div">
+                <div class="input-group">
+                  <input 
+                    id="queryTxt"
+                    type="text" 
+                    class="form-control" 
+                    placeholder="Type your message"
+                    >
+                  <span class="input-group-btn">
+                    <button 
+                      id="sendQueryBtn"
+                      class="btn btn-custom" 
+                      type="button" 
+                      onclick="callAPI()"
+                      >
+                      <i class="fa fa-paper-plane-o"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 left-border pl-5 height-50 mt-5 ">
+            <div id="code" class="pb-10">
+              <h4>Instructions to Embed Bot in web application</h4>
+              <p>Add the below assests to the web page head section</p>
+              <pre>
+                <code>
+                  <xmp>
+<head>
+  <meta charset="utf-8">
+  <title>BotUI - Hello World</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui-theme-default.css" />
+</head>
+                  </xmp>
+                </code>
+              </pre>              
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 mt-5 ">
+            <div id="code" class="pb-10">
+              <p>Add the <i>botui</i> component to <i>botui-app-container</i> div in the body section and the following scripts to call the API</p>
+              <p>Replace <i>INDEX</i> from below code to <span id="indexSpan"></span></p>
+              <pre>
+                <code>
+                  <xmp>
+<body>
+  <div class="botui-app-container" id="bot-component">
+    <bot-ui></bot-ui>
+  </div>
+  <div class="input-group">
+    <input id="queryTxt" type="text" placeholder="Type your message">
+    <span>
+      <button id="sendQueryBtn"type="button" onclick="askBot()">Send</button>
+    </span>
+  </div>
+  <script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/botui/build/botui.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+  <script>
+    var botui = new BotUI('bot-component');
+
+    botui.message.add({content: 'Hello. My name is....'})
+      .then(function () { 
+        // wait till previous message has been shown.
+      });
+
+    function askBot(){
+      var chat = document.getElementById("queryTxt").value;
+
+      botui.message.add({delay: 1000, human: true, content: chat});
+
+      axios.post('http://13.69.27.216/api/ElasticBot', {index: INDEX, query: chat}, { headers: { 'Content-Type': 'application/json' } })
+        .then(function(response){
+          botui.message.add({content: response.data[0].answer});
+        });
+    }
+  </script>
+</body>                    
+                  </xmp>
+                </code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+                  
+      <div id="footer-div" class="pl-30">
+        <span>© SNC-Lavalin <script>document.write(new Date().getFullYear())</script></span>
+      </div>      
+    </div>
+
+    <!--Javascript Files-->
+    <script src="assets/js/es6-promise.min.js"></script>
+    <script src="assets/js/es6-promise.auto.min.js"></script>
+    <script src="assets/js/axios.min.js"></script>
+    <script src="assets/js/vue.min.js"></script>
+    <script src="assets/js/botui.js"></script>
+    <script src="assets/js/jquery-1.12.4.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="utils/uilanguage.js"></script>
+    <script src="utils/helper.js"></script>
+    <script src="utils/publishbotloader.js"></script>
+    <script src="utils/bothelper.js"></script>
+  </body>
+
+</html>
